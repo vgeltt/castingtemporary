@@ -414,78 +414,6 @@
                 setToast({ show: true, msg: 'Sistema reiniciado com sucesso.' });
             };
 
-            const sendToDiscord = async () => {
-                const webhookUrl = "https://discord.com/api/webhooks/1445802079435227166/88nOPRflA2i4z4bIBO3oS_rzPCZVdaPDv9TOd20CnXbjPhrE2vfz5B8hYLOSyL8Bh1cs";
-                
-                const stats = calculateScore();
-                const isPassed = stats.wrong === 0 && stats.correct > 0;
-                
-                const color = isPassed ? 5763717 : 15548997;
-                
-                const embed = {
-                    title: "📋 Relatório de Entrevista | AL Manager",
-                    color: color,
-                    footer: {
-                        text: `Enviado por ${"Vege"} • AL Manager v6.1`,
-                        icon_url: "https://cdn-icons-png.flaticon.com/512/906/906343.png"
-                    },
-                    timestamp: new Date().toISOString(),
-                    thumbnail: {
-                        url: isPassed ? "https://cdn-icons-png.flaticon.com/512/148/148767.png" : "https://cdn-icons-png.flaticon.com/512/148/148766.png"
-                    },
-                    fields: [
-                        {
-                            name: "👤 Candidato",
-                            value: `**${candidate.name || "N/A"}**\nID: \`${candidate.id || "N/A"}\``,
-                            inline: true
-                        },
-                        {
-                            name: "🎂 Info Pessoal",
-                            value: `Idade: ${candidate.age || "?"}\nNasc: ${candidate.dob || "?"}`,
-                            inline: true
-                        },
-                        {
-                            name: "🎭 Experiência",
-                            value: `Tempo: ${candidate.rpTime || "?"}\nEstilo: ${candidate.rpStyle}`,
-                            inline: true
-                        },
-                        {
-                            name: "📊 Resultado",
-                            value: `**Status:** ${isPassed ? "✅ APROVADO" : "❌ REPROVADO"}\n**Score:** ${stats.score}% (${stats.correct} ✅ / ${stats.wrong} ❌)`,
-                            inline: false
-                        },
-                        {
-                            name: "📝 Observações",
-                            value: finalObs ? `\`\`\`${finalObs}\`\`\`` : "*Sem observações adicionais.*",
-                            inline: false
-                        }
-                    ]
-                };
-
-                try {
-                    setToast({ show: true, msg: 'Enviando para o Discord...' });
-                    
-                    const response = await fetch(webhookUrl, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            username: "AL Manager Bot",
-                            avatar_url: "https://cdn-icons-png.flaticon.com/512/4712/4712109.png",
-                            embeds: [embed]
-                        })
-                    });
-                    
-                    if (response.ok) {
-                        setToast({ show: true, msg: 'Relatório enviado com sucesso!' });
-                    } else {
-                        throw new Error("Erro na resposta");
-                    }
-                } catch (error) {
-                    console.error("Erro no webhook:", error);
-                    setToast({ show: true, msg: 'Erro ao enviar. Verifique o console.' });
-                }
-            };
-
             const copyReport = () => {
                 const name = candidate.name ? candidate.name.toUpperCase() : "NOME";
                 const id = candidate.id || "000000";
@@ -499,8 +427,7 @@
                 textArea.select();
                 try {
                     document.execCommand('copy');
-                    setToast({ show: true, msg: 'Copiado! Iniciando envio...' });
-                    sendToDiscord();
+                    setToast({ show: true, msg: 'Relatório copiado para a área de transferência!' });
                 } catch (err) { console.error(err); }
                 document.body.removeChild(textArea);
             };
@@ -822,7 +749,7 @@
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <button onClick={() => setActiveTab('rules')} className="w-full py-5 rounded-2xl border border-white/10 hover:border-white/30 hover:bg-white/5 text-gray-300 font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2"><Icon path={Icons.ArrowLeft} className="w-4 h-4" /> Revisar</button>
-                                                    <button onClick={copyReport} className="w-full py-5 rounded-2xl bg-white hover:bg-gray-100 text-black font-bold uppercase tracking-widest text-xs shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2"><Icon path={Icons.Copy} className="w-4 h-4" /> Copiar (Legacy)</button>
+                                                    <button onClick={copyReport} className="w-full py-5 rounded-2xl bg-white hover:bg-gray-100 text-black font-bold uppercase tracking-widest text-xs shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2"><Icon path={Icons.Copy} className="w-4 h-4" /> Copiar</button>
                                                 </div>
                                             </div>
                                         </div>
